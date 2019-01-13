@@ -14,7 +14,7 @@ colorPair.colorset1_sim={
 colorPair.colorset1_sim={ 
                      [],[],[],[],...}
                      
-Second, to validate your color on http://colormine.org/delta-e-calculator[http://colormine.org/delta-e-calculator]
+Second, to validate your color on http://colormine.org/delta-e-calculator
 
 To visually check the result.
 
