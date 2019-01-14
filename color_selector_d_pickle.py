@@ -6,16 +6,32 @@ This module can automaticly generate many pair of random color pair,
 which can be recognized by normal people but people with CVD, literally
 color visual difficiency. 
 
+The result is saved in a pickle file(object). such as:
+d_colorPairs.pkl = {
+                        "colorset1": [[r, g, b]
+                                      [r, g, b]
+                                      ]
+                        "colorset2":[[r, g, b]
+                                      [r, g, b]
+                                      ]
+                        }
+
 '''
 
-
+import pickle
 import numpy as np
 import colormath
 # import colorsys
-# from skimage.color.colorconv import rgb2lab
 from skimage.color import rgb2lab
 from skimage.color import delta_e
-# from precise_ishihara_test.linear_equation import lms_sim
+
+import math
+import glob, os
+import json
+from jinja2._identifier import pattern
+
+print("start go")
+
 
 cb_matrices = {
         "d": np.array([[1, 0, 0], [0.494207, 0, 1.24827], [0, 0, 1]]),
@@ -44,12 +60,12 @@ def color_selection():
     
     '''To simulate
     '''
-    
-    color1_sim = np.matmul(cb_matrices["d"],np.matmul(rgb2lms,color1))
+    cvd_matrix= cb_matrices["d"]
+    color1_sim = np.matmul(cvd_matrix,np.matmul(rgb2lms,color1))
     # color1_sim = np.around(np.matmul(lms2rgb,color1_sim)*255)
     color1_sim = np.matmul(lms2rgb,color1_sim)
     
-    color2_sim = np.matmul(cb_matrices["d"],np.matmul(rgb2lms,color2))
+    color2_sim = np.matmul(cvd_matrix,np.matmul(rgb2lms,color2))
     # color1_sim = np.around(np.matmul(lms2rgb,color1_sim)*255)
     color2_sim = np.matmul(lms2rgb,color2_sim)
     
@@ -113,9 +129,42 @@ print colorsim1
 print colorsim2
 print ratio_now
 
-file = open('d_colorPairs.json','w')
+# file_json = open('d_colorPairs.json','r+')
+# d_pkl = pickle.load("d_colorPairs.pkl")
+# with open('d_colorPairs.json', 'r') as f:
+#     dist_color = json.load(f)
+#     print dist_color["colorset1"]
+# # model_json = json.load(file_json)
+# d_colorPair=json.load(file_json)
+d_colorPair=pickle.load(open( "d_colorPairs.pkl", "rb"))
+#for items in model_json:
+#     if model_json != None:
+#         patterns.append(model_json)
+'''
+d_colorPair["colorset1"]=[]
+d_colorPair["colorset2"]=[]
+'''
+for x in colorset1:
+    d_colorPair["colorset1"].append(x.tolist())
+for x in colorset2:
+    d_colorPair["colorset2"].append(x.tolist())
+# patterns.append([x,y] for x,y in zip(colorset1,colorset2))
+# patterns.append([x,y] for x,y in zip(colorset1,colorset2))
+
+print "total color pair now is : \n",len(d_colorPair["colorset1"])
+print "color pair now is : \n",d_colorPair["colorset1"]
+
 # json.dump(patterns,file,ensure_ascii=False)
-json.dump(patterns, file, ensure_ascii=False)
+# json.dump(d_colorPair, file_json, ensure_ascii=False)
+# json.dump(d_colorPair, file_json, ensure_ascii=True)
+pickle.dump(d_colorPair, open( "d_colorPairs.pkl", "wb"))
+
+
+'''Check the result
+'''
+colors_in_hand=pickle.load(open( "d_colorPairs.pkl", "rb"))
+print colors_in_hand
+print "Done"
 
 
 
